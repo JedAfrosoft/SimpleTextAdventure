@@ -83,17 +83,15 @@ public class GameWindow extends JFrame implements ActionListener {
 
     }
 
-    JPanel leftButton;
-    JPanel rightButton;
     JButton choice1;
     JButton choice2;
     JButton exitButton;
-
     JLabel message;
+    JPanel screenPanel;
 
     private void firstScreen(){
 
-        JPanel screenPanel=new JPanel();
+        screenPanel=new JPanel();
         screenPanel.setBounds(0,0, gameScreenSize.width, gameScreenSize.height);
         screenPanel.setBackground(Color.BLACK);
         screenPanel.setOpaque(true);
@@ -111,35 +109,26 @@ public class GameWindow extends JFrame implements ActionListener {
         message.setVerticalAlignment(JLabel.TOP);
         screenPanel.add(message);
 
-        leftButton=new JPanel();
-        leftButton.setLayout(new BorderLayout());
-        leftButton.setBounds(100,300,200,100);
-        leftButton.setBackground(Color.BLACK);
-        screenPanel.add(leftButton);
-
-        rightButton=new JPanel();
-        rightButton.setLayout(new BorderLayout());
-        rightButton.setBounds(300,300,200,100);
-        rightButton.setBackground(Color.BLACK);
-        screenPanel.add(rightButton);
-
 
         choice1=new JButton("Stay where you are");
+        choice1.setBounds(100,300,200,100);
         choice1.setForeground(Color.WHITE);
         choice1.setBackground(Color.BLACK);
         choice1.addActionListener(this);
         choice1.setFocusable(false);
         choice1.setActionCommand("stay");
-        leftButton.add(choice1,BorderLayout.CENTER);
+        screenPanel.add(choice1);
 
 
         choice2=new JButton("<html>"+"Start walking in a random direction"+ "</html>");
+        choice2.setBounds(300,300,200,100);
         choice2.setForeground(Color.WHITE);
         choice2.setBackground(Color.BLACK);
         choice2.addActionListener(this);
         choice2.setFocusable(false);
         choice2.setActionCommand("go");
-        rightButton.add(choice2,BorderLayout.CENTER);
+        screenPanel.add(choice2);
+
 
         exitButton=new JButton("Exit Game");
         exitButton.setForeground(Color.WHITE);
@@ -167,9 +156,8 @@ public class GameWindow extends JFrame implements ActionListener {
            {
 //               System.out.println("Button Successfully pressed");
                firstScreen();
-               //Apparently you can still click the start button in the back if there is no other component in the way
-               //Panel doesn't count, I can still click the start button through it
-               //Can't disable the start button from here sadly
+               startButton.setEnabled(false);
+
            }
         else if (e.getSource()==exitButton)
         {
@@ -203,8 +191,8 @@ public class GameWindow extends JFrame implements ActionListener {
                     choice2.setActionCommand("fall");
                 }
                 break;
-                case "fall":{
-
+                case "fight":{
+                    createCombatScreen();
                 }
                 break;
             }
@@ -255,5 +243,105 @@ public class GameWindow extends JFrame implements ActionListener {
             }
 
         }
+    }
+    
+    
+    JPanel combatPanel;
+    JButton attack,defend,takeTheHit;
+    JLabel dialogueBox,enemyHealth,yourHealth,yourHP,enemyHP;
+    
+    private void createCombatScreen() {
+
+        Component[] previousPanelComponents= screenPanel.getComponents();
+
+        for(Component component: previousPanelComponents)
+           {
+               component.setEnabled(false);
+               //Keep in mind disabling a component does not disable the components within that component
+               //This means you need to consider example situations like a panel that is holding a button.
+               //The panel will become disabled but not the button
+           }
+
+        combatPanel=new JPanel();
+        combatPanel.setBounds(0,0, gameScreenSize.width, gameScreenSize.height);
+        combatPanel.setBackground(Color.BLACK);
+        combatPanel.setOpaque(true);
+        combatPanel.setLayout(null);
+
+        dialogueBox=new JLabel();
+        dialogueBox.setBounds(50,50,500,200);
+        dialogueBox.setText("<html>Test</html>");
+        dialogueBox.setForeground(Color.WHITE);
+        dialogueBox.setBackground(Color.DARK_GRAY);
+        dialogueBox.setBorder(BorderFactory.createLineBorder(Color.WHITE,2,true));
+        dialogueBox.setOpaque(true);
+        dialogueBox.setFont(new Font(null,Font.PLAIN,20));
+        dialogueBox.setVerticalAlignment(JLabel.TOP);
+        combatPanel.add(dialogueBox);
+
+        yourHealth=new JLabel();
+        yourHealth.setBounds(50,250,200,100);
+        yourHealth.setFont(new Font(null,Font.BOLD,20));
+        yourHealth.setText("Your Health");
+        yourHealth.setForeground(Color.WHITE);
+        yourHealth.setBackground(Color.BLACK);
+        combatPanel.add(yourHealth);
+
+        yourHP=new JLabel();
+        yourHP.setBounds(80,275,100,100);
+        yourHP.setFont(new Font(null,Font.BOLD,20));
+        yourHP.setText("5/100");
+        yourHP.setForeground(Color.WHITE);
+        yourHP.setBackground(Color.BLACK);
+        combatPanel.add(yourHP);
+
+        enemyHealth=new JLabel();
+        enemyHealth.setBounds(410,250,200,100);
+        enemyHealth.setFont(new Font(null,Font.BOLD,20));
+        enemyHealth.setText("Reaper Health");
+        enemyHealth.setForeground(Color.WHITE);
+        enemyHealth.setBackground(Color.BLACK);
+        combatPanel.add(enemyHealth);
+
+        enemyHP=new JLabel();
+        enemyHP.setBounds(460,270,100,100);
+        enemyHP.setFont(new Font(null,Font.BOLD,20));
+        enemyHP.setText("???");
+        enemyHP.setForeground(Color.WHITE);
+        enemyHP.setBackground(Color.BLACK);
+        combatPanel.add(enemyHP);
+
+        attack=new JButton("Attack");
+        attack.setBounds(50,400,100,100);
+        attack.setForeground(Color.WHITE);
+        attack.setBackground(Color.BLACK);
+//        attack.addActionListener(this);
+        attack.setFocusable(false);
+//        attack.setActionCommand("stay");
+        combatPanel.add(attack);
+
+        defend=new JButton("Defend");
+        defend.setBounds(200,400,100,100);
+        defend.setForeground(Color.WHITE);
+        defend.setBackground(Color.BLACK);
+//        defend.addActionListener(this);
+        defend.setFocusable(false);
+//        defend.setActionCommand("stay");
+        combatPanel.add(defend);
+
+        takeTheHit=new JButton("Take The Hit");
+        takeTheHit.setBounds(350,400,200,100);
+        takeTheHit.setForeground(Color.WHITE);
+        takeTheHit.setBackground(Color.BLACK);
+//        takeTheHit.addActionListener(this);
+        takeTheHit.setFocusable(false);
+//        takeTheHit.setActionCommand("stay");
+        combatPanel.add(takeTheHit);
+        
+
+
+
+        layeredPane.add(combatPanel,Integer.valueOf(2));
+        System.out.println("Combat Panel successfully added");
     }
 }
