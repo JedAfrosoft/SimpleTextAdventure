@@ -148,8 +148,13 @@ public class GameWindow extends JFrame implements ActionListener {
     String currentChoice1;
     String currentChoice2;
 
+    String action;
+    int actionCounter=0;
+    boolean onlyTakeTheHitUsed=true;
+
     @Override
     public void actionPerformed(ActionEvent e) {
+
 
 
         if (e.getSource()==startButton)
@@ -222,7 +227,7 @@ public class GameWindow extends JFrame implements ActionListener {
                     System.out.println("Button 2 function changed successfully");
                     JOptionPane.showMessageDialog(null,
                             "You sense you do not have the strength to turn back. You have not recovered much and " +
-                                    "your body wishes to move closer to the entity.",
+                                    "your body is stuck in a forward momentum you cannot stop.",
                             "Turn Back",
                             JOptionPane.PLAIN_MESSAGE);
                 }
@@ -243,12 +248,103 @@ public class GameWindow extends JFrame implements ActionListener {
             }
 
         }
+        else if(e.getSource()==attack||e.getSource()==defend||e.getSource()==takeTheHit)
+        {
+            action=e.getActionCommand();
+            System.out.println(action);
+            actionCounter++;
+            HP--;
+            yourHP.setText(HP+"/100");
+
+            if (action.equals("attack")||action.equals("defend"))
+               {
+                   onlyTakeTheHitUsed=false;
+               }
+
+
+            if (actionCounter==5)
+            {
+                if (onlyTakeTheHitUsed)
+                   {
+                       System.out.println("True Ending");
+                       JOptionPane.showMessageDialog(null,
+                               "After the Reaper has seen you are not fighting back, he decided to send you back to where you came from",
+                               "Ending",
+                               JOptionPane.PLAIN_MESSAGE);
+                       JOptionPane.showMessageDialog(null,
+                               "You wake up from a shining light and look around you to find yourself in your room",
+                               "Ending",
+                               JOptionPane.PLAIN_MESSAGE);
+                       JOptionPane.showMessageDialog(null,
+                               "On the floor besides you are syringes and powder with labels for drugs",
+                               "Ending",
+                               JOptionPane.PLAIN_MESSAGE);
+                       JOptionPane.showMessageDialog(null,
+                               "You look slightly more up and see your partner staring at you in tears. They give you the biggest hug",
+                               "Ending",
+                               JOptionPane.PLAIN_MESSAGE);
+                       JOptionPane.showMessageDialog(null,
+                               "\"I thought I lost you for good. Please, never leave me again\"",
+                               "Your Partner:",
+                               JOptionPane.PLAIN_MESSAGE);
+                       JOptionPane.showMessageDialog(null,
+                               "TRUE ENDING. CONGRATS I GUESS",
+                               "True Ending",
+                               JOptionPane.INFORMATION_MESSAGE);
+                       this.dispose();
+                   }
+                else{
+                    JOptionPane.showMessageDialog(null,
+                            "The reaper grows bored of you and seems disappointed. It speaks once more:",
+                            "Ending",
+                            JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            "\"You tried to escape from the very thing you are fighting right now\"",
+                            "Reaper:",
+                            JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            "\"I would have killed you, but I shall leave you here with your thoughts to suffer\"",
+                            "Reaper:",
+                            JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            "\"When you think you are ready, close your eyes and come back again\"",
+                            "Reaper:",
+                            JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            "\"You will keep coming back here and you will find me here until you do what is right\"",
+                            "Reaper:",
+                            JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            "YOU GOT THE GOOD ENDING? MAYBE TRY AGAIN, JUST TAKE ALL THE HITS",
+                            "Good Ending?",
+                            JOptionPane.QUESTION_MESSAGE);
+                    this.dispose();
+                }
+            }
+
+            switch (actionCounter){
+
+                case 1:{dialogueBox.setText("<html><div style='text-align: center;'>Reaper:<p>Why do you even bother struggling....</html>");}
+                break;
+                case 2:{dialogueBox.setText("<html><div style='text-align: center;'>Reaper:<p>You were doomed from the moment you arrived here....</html>");}
+                break;
+                case 3:{dialogueBox.setText("<html><div style='text-align: center;'>Reaper:<p>I wonder what it is that moves your spirit.....</html>");}
+                break;
+                case 4:{dialogueBox.setText("<html><div style='text-align: center;'>Reaper:<p>Oh what shall I do with you weak one....</html>");}
+                break;
+            }
+
+            System.out.println(onlyTakeTheHitUsed);
+            System.out.println(actionCounter);
+        }
+
     }
     
     
     JPanel combatPanel;
     JButton attack,defend,takeTheHit;
     JLabel dialogueBox,enemyHealth,yourHealth,yourHP,enemyHP;
+    int HP=5;
     
     private void createCombatScreen() {
 
@@ -270,13 +366,14 @@ public class GameWindow extends JFrame implements ActionListener {
 
         dialogueBox=new JLabel();
         dialogueBox.setBounds(50,50,500,200);
-        dialogueBox.setText("<html>Test</html>");
+        dialogueBox.setText("<html>Reaper:<p>\"Suffer....\"</html>");
         dialogueBox.setForeground(Color.WHITE);
         dialogueBox.setBackground(Color.DARK_GRAY);
         dialogueBox.setBorder(BorderFactory.createLineBorder(Color.WHITE,2,true));
         dialogueBox.setOpaque(true);
         dialogueBox.setFont(new Font(null,Font.PLAIN,20));
         dialogueBox.setVerticalAlignment(JLabel.TOP);
+        dialogueBox.setHorizontalAlignment(JLabel.CENTER);
         combatPanel.add(dialogueBox);
 
         yourHealth=new JLabel();
@@ -290,7 +387,7 @@ public class GameWindow extends JFrame implements ActionListener {
         yourHP=new JLabel();
         yourHP.setBounds(80,275,100,100);
         yourHP.setFont(new Font(null,Font.BOLD,20));
-        yourHP.setText("5/100");
+        yourHP.setText(HP+"/100");
         yourHP.setForeground(Color.WHITE);
         yourHP.setBackground(Color.BLACK);
         combatPanel.add(yourHP);
@@ -315,33 +412,31 @@ public class GameWindow extends JFrame implements ActionListener {
         attack.setBounds(50,400,100,100);
         attack.setForeground(Color.WHITE);
         attack.setBackground(Color.BLACK);
-//        attack.addActionListener(this);
+        attack.addActionListener(this);
         attack.setFocusable(false);
-//        attack.setActionCommand("stay");
+        attack.setActionCommand("attack");
         combatPanel.add(attack);
 
         defend=new JButton("Defend");
         defend.setBounds(200,400,100,100);
         defend.setForeground(Color.WHITE);
         defend.setBackground(Color.BLACK);
-//        defend.addActionListener(this);
+        defend.addActionListener(this);
         defend.setFocusable(false);
-//        defend.setActionCommand("stay");
+        defend.setActionCommand("defend");
         combatPanel.add(defend);
 
         takeTheHit=new JButton("Take The Hit");
         takeTheHit.setBounds(350,400,200,100);
         takeTheHit.setForeground(Color.WHITE);
         takeTheHit.setBackground(Color.BLACK);
-//        takeTheHit.addActionListener(this);
+        takeTheHit.addActionListener(this);
         takeTheHit.setFocusable(false);
-//        takeTheHit.setActionCommand("stay");
+        takeTheHit.setActionCommand("takeTheHit");
         combatPanel.add(takeTheHit);
-        
-
-
 
         layeredPane.add(combatPanel,Integer.valueOf(2));
         System.out.println("Combat Panel successfully added");
     }
+
 }
